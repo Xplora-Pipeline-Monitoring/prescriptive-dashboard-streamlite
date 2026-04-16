@@ -1,5 +1,33 @@
-venv/
-.env
+# Python bytecode and caches
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Coverage and test artifacts
+.coverage
+coverage.xml
+htmlcov/
+
+# Environment and local secrets
+.env
+.env.*
 .streamlit/secrets.toml
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+
+# Local generated outputs
+output/*
+!output/.gitkeep

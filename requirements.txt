@@ -1,4 +1,12 @@
-streamlit>=1.32.0
-streamlit-agraph>=0.0.45
-plotly>=5.18.0
-python-dotenv>=1.0.0
+streamlit>=1.33
+streamlit-plotly-events
+pandas
+numpy
+scikit-learn
+networkx
+plotly
+matplotlib
+seaborn
+torch
+torch-geometric
+shap

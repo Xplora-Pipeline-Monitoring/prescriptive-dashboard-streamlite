@@ -1,0 +1,54 @@
+{
+  "model_name": "PipelineGuard-AI GraphSAGE",
+  "version": "1.1.0",
+  "architecture": "2-layer SAGEConv",
+  "in_channels": 28,
+  "hidden_channels": [
+    64,
+    32
+  ],
+  "out_channels": 3,
+  "dropout": 0.3,
+  "classes": [
+    "Safe",
+    "Warning",
+    "Critical"
+  ],
+  "feature_columns": [
+    "temp_avg",
+    "press_avg",
+    "ph_level",
+    "pco2_psi",
+    "h2s_ppm",
+    "chloride_ppm",
+    "inhibitor_ppm",
+    "segment_age",
+    "wall_thick_nom",
+    "corrosion_rate_mm_yr",
+    "nlp_anomaly_score",
+    "in_flow_mean",
+    "in_distance_mean",
+    "in_elev_abs_mean",
+    "temp_avg_missing",
+    "press_avg_missing",
+    "ph_level_missing",
+    "pco2_psi_missing",
+    "h2s_ppm_missing",
+    "chloride_ppm_missing",
+    "inhibitor_ppm_missing",
+    "segment_age_missing",
+    "wall_thick_nom_missing",
+    "corrosion_rate_mm_yr_missing",
+    "nlp_anomaly_score_missing",
+    "in_flow_mean_missing",
+    "in_distance_mean_missing",
+    "in_elev_abs_mean_missing"
+  ],
+  "metrics": {
+    "best_test_f1": 1.0,
+    "test_accuracy": 1.0
+  },
+  "physics_model": "de Waard-Milliams (1991) + pH/Chloride/H2S/Inhibitor corrections",
+  "deployment_ready": true,
+  "streamlit_compatible": true
+}

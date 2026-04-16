@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+/prescriptive-dashboard-streamlite
 
 # Virtual environments
 .venv/

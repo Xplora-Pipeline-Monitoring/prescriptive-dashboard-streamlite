@@ -5,20 +5,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.feature_actions import get_feature_action
 from src.graph_utils import build_edge_index
 from src.preprocess import standardize_features, validate_and_prepare_features
-
-
-DRIVER_GUIDANCE = {
-    "press_avg": "Review pressure window dan mitigasi pressure spike.",
-    "ph_level": "Evaluasi kontrol pH agar tetap di rentang aman.",
-    "pco2_psi": "Tinjau potensi sweet corrosion dan kebutuhan inhibitor.",
-    "h2s_ppm": "Perketat monitoring sour service dan integrity check.",
-    "chloride_ppm": "Optimasi kontrol kontaminan chloride pada fluida.",
-    "inhibitor_ppm": "Evaluasi dosis inhibitor dan efektivitas injeksi.",
-    "corrosion_rate_mm_yr": "Prioritaskan inspeksi UT pada segmen terkait.",
-    "in_flow_mean": "Tinjau efek transport risk dari segmen hulu.",
-}
 
 
 def _sigmoid(x: np.ndarray) -> np.ndarray:
@@ -36,7 +25,7 @@ def _audit_flag(actual_cls: str, pred_cls: str) -> str:
 
 
 def _recommend_from_driver(feature: str, direction: str) -> str:
-    base = DRIVER_GUIDANCE.get(feature, "Lakukan verifikasi lapangan untuk fitur ini.")
+    base = get_feature_action(feature)
     if direction == "positive":
         return f"{feature}: mendorong risiko naik. {base}"
     return f"{feature}: menahan risiko. Pertahankan kontrol operasional saat ini."
@@ -201,13 +190,17 @@ def compute_shap_artifacts(
             top_drivers.append(f"{feat} ({shap_val:+.4f})")
             recs.append(_recommend_from_driver(feat, direction))
 
-        base_row = {"node_id": int(node_id)}
+        base_row: dict[str, Any] = {"node_id": int(node_id)}
         if int(node_id) in base_node.index:
             raw = base_node.loc[int(node_id)]
+            if isinstance(raw, pd.DataFrame):
+                raw = raw.iloc[0]
             for col in ["risk_class"] + display_feature_cols:
                 base_row[col] = raw[col] if col in raw.index else np.nan
 
         pred_row = node_lookup.loc[int(node_id)]
+        if isinstance(pred_row, pd.DataFrame):
+            pred_row = pred_row.iloc[0]
         pred_cls = str(pred_row.get("predicted_class", "Safe"))
         actual_cls = str(base_row.get("risk_class", pred_cls))
 

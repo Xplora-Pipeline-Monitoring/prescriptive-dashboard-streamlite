@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from src.app_state import get_base_artifacts, get_prediction_table
+from src.feature_actions import get_feature_action
 from src.graph_utils import build_network_graph
 from src.ui_theme import apply_app_theme, render_page_hero
 
@@ -47,14 +48,14 @@ render_page_hero(
 
 
 FEATURE_RULES = [
-    ("corrosion_rate_mm_yr", "max", 1.00, "Turunkan laju korosi lewat optimasi inhibitor dan inspeksi targeted."),
-    ("ph_level", "min", 6.50, "Stabilkan pH proses agar tidak terlalu asam."),
-    ("h2s_ppm", "max", 18.0, "Kurangi paparan sour service dan verifikasi treatment kimia."),
-    ("chloride_ppm", "max", 800.0, "Tekan kontaminasi chloride untuk menurunkan agresivitas korosi."),
-    ("inhibitor_ppm", "min", 20.0, "Naikkan dosis inhibitor ke rentang aman operasi."),
-    ("press_avg", "max", 60.0, "Review pressure window untuk mengurangi stress pada segmen."),
-    ("pco2_psi", "max", 1.50, "Pantau risiko sweet corrosion dan sesuaikan mitigasi."),
-    ("nlp_anomaly_score", "max", 0.60, "Validasi catatan inspeksi karena anomali teks meningkat."),
+    ("corrosion_rate_mm_yr", "max", 1.00),
+    ("ph_level", "min", 6.50),
+    ("h2s_ppm", "max", 18.0),
+    ("chloride_ppm", "max", 800.0),
+    ("inhibitor_ppm", "min", 20.0),
+    ("press_avg", "max", 60.0),
+    ("pco2_psi", "max", 1.50),
+    ("nlp_anomaly_score", "max", 0.60),
 ]
 
 
@@ -66,7 +67,7 @@ def _severity_score(value: float, rule_type: str, threshold: float) -> float:
 
 def _build_operator_actions(node_data: pd.Series) -> pd.DataFrame:
     rows: list[dict] = []
-    for feature, rule_type, threshold, action in FEATURE_RULES:
+    for feature, rule_type, threshold in FEATURE_RULES:
         if feature not in node_data.index:
             continue
         raw_val = node_data.get(feature)
@@ -86,7 +87,7 @@ def _build_operator_actions(node_data: pd.Series) -> pd.DataFrame:
                 "nilai_saat_ini": float(value),
                 "target_operasi": float(threshold),
                 "severity": float(sev),
-                "aksi_disarankan": action,
+                "aksi_disarankan": get_feature_action(feature),
             }
         )
 

@@ -10,10 +10,10 @@ from src.inference import run_stress_test
 from src.ui_theme import apply_app_theme, render_page_hero
 
 
-st.set_page_config(page_title="Validasi dan Metrik", layout="wide")
+st.set_page_config(page_title="Evaluasi Metrik Model", layout="wide")
 apply_app_theme()
 render_page_hero(
-    "Validasi dan Metrik Model",
+    "Evaluasi Metrik Model",
     "Bandingkan performa standard vs stress test serta cek stabilitas metrik untuk pengambilan keputusan operasional.",
 )
 

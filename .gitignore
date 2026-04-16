@@ -23,6 +23,7 @@ htmlcov/
 .env
 .env.*
 .streamlit/secrets.toml
+experiment/key.txt
 
 # OS and editor noise
 .DS_Store

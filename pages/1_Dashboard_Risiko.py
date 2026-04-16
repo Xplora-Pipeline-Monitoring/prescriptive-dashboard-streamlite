@@ -3,7 +3,8 @@ from __future__ import annotations
 import plotly.express as px
 import streamlit as st
 
-from src.app_state import get_prediction_table
+from src.app_state import get_base_artifacts, get_prediction_table
+from src.topology_risk_section import render_topology_risk_section
 from src.ui_theme import apply_app_theme, render_page_hero
 
 
@@ -14,7 +15,7 @@ render_page_hero(
     "Pantau distribusi risiko, probabilitas critical, dan indikator diagnostik utama per segmen pipa.",
 )
 
-prediction_df, meta = get_prediction_table()
+prediction_df, _ = get_prediction_table()
 
 df = prediction_df.copy()
 if "node_id" not in df.columns:
@@ -34,30 +35,17 @@ k2.metric("Jumlah Critical", int((df["predicted_class"] == "Critical").sum()))
 k3.metric("Jumlah P1", int((df["priority_tier"] == "P1").sum()))
 k4.metric("Rata-rata Risk Score", f"{df['priority_score'].mean():.3f}")
 
-c1, c2 = st.columns(2)
-with c1:
-    dist = df["predicted_class"].value_counts().rename_axis("class").reset_index(name="count")
-    fig_class = px.bar(
-        dist,
-        x="class",
-        y="count",
-        color="class",
-        title="Distribusi Kelas Prediksi",
-        category_orders={"class": ["Safe", "Warning", "Critical"]},
-        color_discrete_map={"Safe": "#22c55e", "Warning": "#f59e0b", "Critical": "#ef4444"},
-    )
-    st.plotly_chart(fig_class, width="stretch")
-
-with c2:
-    fig_hist = px.histogram(
-        df,
-        x="critical_prob",
-        nbins=20,
-        color="predicted_class",
-        title="Distribusi Probabilitas Critical",
-        color_discrete_map={"Safe": "#22c55e", "Warning": "#f59e0b", "Critical": "#ef4444"},
-    )
-    st.plotly_chart(fig_hist, width="stretch")
+dist = df["predicted_class"].value_counts().rename_axis("class").reset_index(name="count")
+fig_class = px.bar(
+    dist,
+    x="class",
+    y="count",
+    color="class",
+    title="Distribusi Kelas Prediksi",
+    category_orders={"class": ["Safe", "Warning", "Critical"]},
+    color_discrete_map={"Safe": "#22c55e", "Warning": "#f59e0b", "Critical": "#ef4444"},
+)
+st.plotly_chart(fig_class, width="stretch")
 
 st.subheader("Feature Diagnostics (Acuan Notebook)")
 feature_opt = st.selectbox(
@@ -94,15 +82,14 @@ st.dataframe(
     hide_index=True,
 )
 
-with st.expander("Ringkasan Konteks Model", expanded=False):
-    model_cfg = meta.get("model_config", {})
-    info1, info2, info3 = st.columns(3)
-    info1.metric("Model", str(model_cfg.get("model_name", "N/A")))
-    info2.metric("Versi", str(model_cfg.get("version", "N/A")))
-    info3.metric("Mode Inferensi", str(meta.get("inference_mode", "N/A")))
+node_df_map = prediction_df.copy()
+if "node_id" not in node_df_map.columns:
+    node_df_map["node_id"] = node_df_map.index
+_, edge_df_map, _, _ = get_base_artifacts()
+render_topology_risk_section(
+    node_df_map,
+    edge_df_map,
+    plotly_events_key="dashboard_topology_click",
+    selected_node_session_key="dashboard_topology_selected_node_id",
+)
 
-    metrics = model_cfg.get("metrics", {})
-    if metrics:
-        st.markdown("**Metrik Model**")
-        for metric_name, metric_value in metrics.items():
-            st.markdown(f"- {metric_name}: {metric_value}")

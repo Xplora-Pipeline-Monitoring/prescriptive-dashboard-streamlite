@@ -11,7 +11,7 @@ apply_app_theme()
 
 render_page_hero(
     "Peta Jaringan Pipeline",
-    "Ringkasan metrik jaringan. Peta topology interaktif dan diagnosis per node ada di halaman Dashboard Risiko (bagian bawah, setelah tabel risiko).",
+    "Ringkasan metrik jaringan. Peta topologi interaktif dan diagnosis per node ada di halaman Dashboard Risiko (bagian bawah, setelah tabel risiko).",
 )
 
 pred_df, _ = get_prediction_table()
@@ -28,7 +28,7 @@ k3.metric("Node Warning", int((node_df["predicted_class"] == "Warning").sum()))
 k4.metric("Rata-rata Critical Prob", f"{float(node_df['critical_prob'].mean()):.3f}")
 
 st.info(
-    "**Peta interaktif (Topology Risk Map)** beserta panel diagnosis node telah dipindahkan ke "
+    "**Peta interaktif (peta risiko topologi)** beserta panel diagnosis node telah dipindahkan ke "
     "**Dashboard Risiko**, tepatnya di bawah bagian **Tabel Risiko Per Segmen**."
 )
 

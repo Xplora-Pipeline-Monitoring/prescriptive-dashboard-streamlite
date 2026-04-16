@@ -9,7 +9,7 @@ load_dotenv()
 import streamlit as st
 
 st.set_page_config(
-    page_title="PipelineGuard AI Dashboard",
+    page_title="Dasbor PipelineGuard AI",
     page_icon="assets",
     layout="wide",
     initial_sidebar_state="expanded",

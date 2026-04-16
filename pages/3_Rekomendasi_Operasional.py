@@ -10,7 +10,7 @@ st.set_page_config(page_title="Rekomendasi Operasional", layout="wide")
 apply_app_theme()
 render_page_hero(
     "Rekomendasi Operasional Berbasis Risiko",
-    "Gunakan filter area dan tier untuk menghasilkan action plan inspeksi yang paling berdampak.",
+    "Gunakan filter area dan tier untuk menghasilkan rencana tindakan inspeksi yang paling berdampak.",
 )
 
 pred_df, _ = get_prediction_table()
@@ -45,7 +45,7 @@ s1, s2, s3, s4 = st.columns(4)
 s1.metric("Total Hasil Filter", int(len(filtered)))
 s2.metric("P1", int((filtered["priority_tier"] == "P1").sum()))
 s3.metric("Critical", int((filtered["predicted_class"] == "Critical").sum()))
-s4.metric("Avg Priority Score", f"{float(filtered['priority_score'].mean()):.3f}" if len(filtered) else "0.000")
+s4.metric("Rata-rata priority_score", f"{float(filtered['priority_score'].mean()):.3f}" if len(filtered) else "0.000")
 
 show_cols = [
     "node_id",
@@ -60,12 +60,12 @@ show_cols = [
 ]
 show_cols = [c for c in show_cols if c in filtered.columns]
 
-st.subheader("Top Prioritas Inspeksi")
+st.subheader("Prioritas inspeksi teratas")
 st.dataframe(filtered[show_cols], width="stretch", hide_index=True)
 
 csv_bytes = filtered[show_cols].to_csv(index=False).encode("utf-8")
 st.download_button(
-    label="Unduh CSV Action Plan",
+    label="Unduh CSV rencana tindakan",
     data=csv_bytes,
     file_name="pipelineguard_action_plan.csv",
     mime="text/csv",

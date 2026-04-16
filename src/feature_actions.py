@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 FEATURE_ACTION_MAP = {
-    "temp_avg": "Review temperatur operasi (cooling/flow regime) untuk menurunkan akselerasi reaksi korosi.",
+    "temp_avg": "Tinjau temperatur operasi (cooling/flow regime) untuk menurunkan akselerasi reaksi korosi.",
     "press_avg": "Kurangi pressure spike dan evaluasi choke/control valve.",
     "ph_level": "Stabilkan pH melalui treatment kimia/buffering.",
     "pco2_psi": "Optimalkan kontrol CO2 dan chemical dosing anti-corrosion.",

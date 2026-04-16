@@ -45,9 +45,10 @@ fig_class = px.bar(
     category_orders={"class": ["Safe", "Warning", "Critical"]},
     color_discrete_map={"Safe": "#22c55e", "Warning": "#f59e0b", "Critical": "#ef4444"},
 )
+fig_class.update_layout(xaxis_title="Kelas", yaxis_title="Jumlah")
 st.plotly_chart(fig_class, width="stretch")
 
-st.subheader("Feature Diagnostics (Acuan Notebook)")
+st.subheader("Diagnostik fitur (acuan notebook)")
 feature_opt = st.selectbox(
     "Pilih fitur untuk boxplot lintas kelas",
     options=[c for c in ["press_avg", "ph_level", "h2s_ppm", "pco2_psi", "corrosion_rate_mm_yr"] if c in df.columns],

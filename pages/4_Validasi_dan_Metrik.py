@@ -33,52 +33,60 @@ std_metrics = summarize(base_df)
 stress_metrics = summarize(stress_df)
 
 c1, c2, c3 = st.columns(3)
-c1.metric("Critical Rate (Standard)", f"{std_metrics['critical_rate']:.2%}")
-c2.metric("Critical Rate (Stress)", f"{stress_metrics['critical_rate']:.2%}", delta=f"{stress_metrics['critical_rate'] - std_metrics['critical_rate']:.2%}")
-c3.metric("Avg Critical Prob (Stress)", f"{stress_metrics['avg_critical_prob']:.3f}", delta=f"{stress_metrics['avg_critical_prob'] - std_metrics['avg_critical_prob']:.3f}")
+c1.metric("Laju critical (standar)", f"{std_metrics['critical_rate']:.2%}")
+c2.metric("Laju critical (stress)", f"{stress_metrics['critical_rate']:.2%}", delta=f"{stress_metrics['critical_rate'] - std_metrics['critical_rate']:.2%}")
+c3.metric("Rata-rata critical_prob (stress)", f"{stress_metrics['avg_critical_prob']:.3f}", delta=f"{stress_metrics['avg_critical_prob'] - std_metrics['avg_critical_prob']:.3f}")
 
 compare_df = pd.DataFrame(
     {
-        "scenario": ["Standard Test", "Stress Test"],
+        "skenario": ["Uji standar", "Uji stress"],
         "critical_rate": [std_metrics["critical_rate"], stress_metrics["critical_rate"]],
         "avg_critical_prob": [std_metrics["avg_critical_prob"], stress_metrics["avg_critical_prob"]],
         "avg_priority_score": [std_metrics["avg_priority_score"], stress_metrics["avg_priority_score"]],
     }
 )
 
+_metrik_label = {
+    "critical_rate": "Laju critical",
+    "avg_critical_prob": "Rata-rata critical_prob",
+    "avg_priority_score": "Rata-rata priority_score",
+}
+_compare_melt = compare_df.melt(id_vars="skenario", var_name="metrik", value_name="nilai")
+_compare_melt["metrik"] = _compare_melt["metrik"].map(lambda m: _metrik_label.get(m, m))
+
 scenario_df = pd.DataFrame(
     [
         {
-            "Scenario": "Standard Test (Best Checkpoint)",
-            "Accuracy": 1.0000,
+            "Skenario": "Uji standar (checkpoint terbaik)",
+            "Akurasi": 1.0000,
             "Macro F1": 1.0000,
             "Critical F1": 1.0000,
-            "Purpose": "Nominal condition performance",
+            "Tujuan": "Performa pada kondisi nominal",
         },
         {
-            "Scenario": "Standard Test (Last Epoch)",
-            "Accuracy": 1.0000,
+            "Skenario": "Uji standar (epoch terakhir)",
+            "Akurasi": 1.0000,
             "Macro F1": 1.0000,
             "Critical F1": 1.0000,
-            "Purpose": "Training-end snapshot",
+            "Tujuan": "Snapshot akhir pelatihan",
         },
         {
-            "Scenario": "Stress Test (GraphSAGE w/o Edge Context)",
-            "Accuracy": 0.6957,
+            "Skenario": "Uji stress (GraphSAGE tanpa konteks edge)",
+            "Akurasi": 0.6957,
             "Macro F1": 0.7165,
             "Critical F1": 0.8889,
-            "Purpose": "Robustness under sensor degradation",
+            "Tujuan": "Robustness saat degradasi sensor",
         },
     ]
 )
 
 fig_compare = px.bar(
-    compare_df.melt(id_vars="scenario", var_name="metric", value_name="value"),
-    x="metric",
-    y="value",
-    color="scenario",
+    _compare_melt,
+    x="metrik",
+    y="nilai",
+    color="skenario",
     barmode="group",
-    title="Perbandingan Standard Test vs Stress Test",
+    title="Perbandingan uji standar vs uji stress",
 )
 st.plotly_chart(fig_compare, width="stretch")
 
@@ -86,19 +94,19 @@ if "propagation_uplift" in base_df.columns:
     before_critical = int((base_df["predicted_class"] == "Critical").sum())
     after_critical = int((base_df["critical_prob"] + base_df["propagation_uplift"] >= 0.60).sum())
     prop_df = pd.DataFrame(
-        {"stage": ["Before", "After"], "critical_nodes": [before_critical, after_critical]}
+        {"tahap": ["Sebelum", "Sesudah"], "jumlah_node_critical": [before_critical, after_critical]}
     )
     fig_prop = px.bar(
         prop_df,
-        x="stage",
-        y="critical_nodes",
-        title="Critical Node Count: Before vs After Propagation",
-        color="stage",
-        color_discrete_map={"Before": "#60a5fa", "After": "#ef4444"},
+        x="tahap",
+        y="jumlah_node_critical",
+        title="Jumlah node Critical: sebelum vs sesudah propagasi",
+        color="tahap",
+        color_discrete_map={"Sebelum": "#60a5fa", "Sesudah": "#ef4444"},
     )
     st.plotly_chart(fig_prop, width="stretch")
 
-# Simulasi multi-seed sederhana untuk estimasi stabilitas skenario standard.
+# Simulasi multi-seed sederhana untuk estimasi stabilitas skenario standar.
 seed_rows = []
 rng = np.random.default_rng(42)
 base_probs = base_df["critical_prob"].to_numpy()
@@ -117,14 +125,14 @@ critical_prob_mean_std = float(seed_df["critical_prob_mean"].std(ddof=1))
 critical_rate_mean = float(seed_df["critical_rate_est"].mean())
 critical_rate_std = float(seed_df["critical_rate_est"].std(ddof=1))
 
-st.subheader("Multi-Seed Summary (Mean ± Std)")
+st.subheader("Ringkasan multi-seed (mean ± std)")
 summary_col1, summary_col2 = st.columns(2)
 
 with summary_col1:
     st.markdown(
         f"""
 <div class="pg-stat-card">
-    <div class="pg-stat-label">Critical Prob Mean</div>
+    <div class="pg-stat-label">Rata-rata critical_prob</div>
     <div class="pg-stat-value">{critical_prob_mean_mean:.3f} ± {critical_prob_mean_std:.3f}</div>
     <div class="pg-stat-note">Rata-rata probabilitas critical dari simulasi 10 seed.</div>
 </div>
@@ -136,7 +144,7 @@ with summary_col2:
     st.markdown(
         f"""
 <div class="pg-stat-card">
-    <div class="pg-stat-label">Critical Rate Estimate</div>
+    <div class="pg-stat-label">Estimasi laju critical</div>
     <div class="pg-stat-value">{critical_rate_mean:.2%} ± {critical_rate_std:.2%}</div>
     <div class="pg-stat-note">Persentase estimasi node critical saat threshold probabilitas 0.60.</div>
 </div>
@@ -144,13 +152,33 @@ with summary_col2:
         unsafe_allow_html=True,
     )
 
-st.dataframe(seed_df, hide_index=True, width="stretch")
+seed_tampil = seed_df.rename(
+    columns={
+        "seed": "seed",
+        "critical_prob_mean": "Rata-rata critical_prob",
+        "critical_rate_est": "Estimasi laju critical",
+    }
+)
+st.dataframe(seed_tampil, hide_index=True, width="stretch")
 
-st.subheader("Scenario Metrics (Notebook Reference)")
+st.subheader("Metrik skenario (referensi notebook)")
 st.dataframe(scenario_df, hide_index=True, width="stretch")
 
-with st.expander("Batasan Model", expanded=False):
-    st.markdown("- Jika model torch tidak bisa dimuat, aplikasi fallback ke mode heuristik.")
-    st.markdown("- Stress test pada halaman ini adalah simulasi operasional untuk robust-check, bukan retraining.")
-    st.markdown("- Validasi final sebelum go-live wajib membandingkan hasil notebook dan Streamlit pada input yang sama.")
-    st.write(f"Mode inference saat ini: {meta.get('inference_mode', 'N/A')}")
+_inference_mode_label = {
+    "heuristic": "Heuristik",
+    "artifact_export": "Ekspor artefak (label)",
+    "torch_model": "Model Torch",
+}
+_mode_tampil = _inference_mode_label.get(str(meta.get("inference_mode", "")), meta.get("inference_mode", "N/A"))
+
+with st.expander("Batasan model", expanded=False):
+    st.markdown(
+        "- Jika model Torch tidak dapat dimuat, aplikasi memakai **fallback** ke skor heuristik."
+    )
+    st.markdown(
+        "- Uji stress di halaman ini adalah simulasi operasional untuk **robustness check**, bukan pelatihan ulang."
+    )
+    st.markdown(
+        "- Validasi akhir sebelum **go-live** wajib membandingkan hasil notebook dan Streamlit pada input yang sama."
+    )
+    st.write(f"Mode inferensi saat ini: {_mode_tampil}")

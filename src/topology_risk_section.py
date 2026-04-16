@@ -174,7 +174,7 @@ def render_topology_risk_section(
 
         tooltip = (
             f"Node: {node_id}<br>"
-            f"Class: {node_class}<br>"
+            f"Kelas: {node_class}<br>"
             f"critical_prob: {float(attrs.get('critical_prob', 0.0)):.3f}<br>"
             f"pH: {attrs.get('ph_level', 'N/A')}<br>"
             f"H2S: {attrs.get('h2s_ppm', 'N/A')}<br>"
@@ -195,7 +195,7 @@ def render_topology_risk_section(
     fig = go.Figure(
         data=[*edge_traces, node_trace],
         layout=go.Layout(
-            title="Topology Risk Map - Klik Node untuk Diagnosis",
+            title="Peta risiko topologi — klik node untuk diagnosis",
             title_x=0.01,
             showlegend=False,
             hovermode="closest",

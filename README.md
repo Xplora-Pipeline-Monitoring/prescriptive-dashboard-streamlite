@@ -13,8 +13,8 @@ Fokus aplikasi ini adalah membantu tim integrity/corrosion engineer mengambil ke
 - Prioritas inspeksi operasional (`P1`, `P2`, `P3`) berbasis skor risiko.
 - Peta jaringan interaktif dengan diagnosis fitur per node.
 - Rekomendasi operasional yang bisa diekspor ke CSV.
-- Validasi skenario (standard vs stress) dan ringkasan stabilitas multi-seed.
-- Explainability SHAP untuk global driver dan audit per node.
+- Evaluasi skenario (uji standar vs uji stress) dan ringkasan stabilitas multi-seed.
+- Penjelasan SHAP untuk penggerak global dan audit per node.
 - UI modern dan konsisten lintas halaman (tema global + kartu metrik responsif).
 
 ## Struktur Proyek
@@ -85,7 +85,7 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-3. Install dependency:
+3. Pasang dependensi:
 
 ```bash
 pip install -r requirements.txt
@@ -103,35 +103,27 @@ streamlit run app.py
 streamlit run app.py --server.headless true --server.port 8510
 ```
 
-## Alur Pakai Cepat (Operator)
+## Alur pakai cepat (operator)
 
-1. Buka halaman `Peta Jaringan` dan pilih node `Warning/Critical`.
-2. Cek panel diagnosis fitur untuk tahu parameter paling mendesak diperbaiki.
-3. Buka `Rekomendasi Operasional` untuk menyusun dan ekspor action plan.
-4. Validasi konteks keputusan di `Validasi dan Metrik`.
-5. Gunakan `Explainability SHAP` saat perlu justifikasi berbasis driver fitur.
+1. Buka **Dashboard Risiko**: tinjau KPI, distribusi kelas, diagnostik fitur, tabel risiko, dan peta topologi interaktif (diagnosis per node di bawah tabel).
+2. Gunakan **Evaluasi Metrik Model** untuk membandingkan uji standar vs uji stress, dampak propagasi, dan ringkasan multi-seed.
+3. (Opsional) File `pages/` lain (`Peta Jaringan`, `Rekomendasi Operasional`, `Explainability SHAP`) tetap ada di repo tetapi tidak tampil di menu navigasi saat ini.
 
-## Ringkasan Halaman
+## Ringkasan halaman (menu aktif)
 
 1. **Dashboard Risiko**
-   - KPI utama, distribusi kelas, histogram probabilitas critical, dan diagnostik fitur.
-2. **Peta Jaringan**
-   - Topology node-edge interaktif, diagnosis fitur per node, dan detail edge sekitar node aktif.
-3. **Rekomendasi Operasional**
-   - Top-N prioritas inspeksi, filter area/tier, tabel prioritas, dan ekspor CSV.
-4. **Validasi dan Metrik**
-   - Perbandingan standard vs stress, dampak propagasi, dan ringkasan multi-seed.
-5. **Explainability SHAP**
-   - Top global SHAP drivers, audit per-node, serta rekomendasi per node.
+   - KPI utama, distribusi kelas, diagnostik fitur, tabel risiko per segmen, peta topologi, analisis AI (OpenRouter), dan daftar tiket.
+2. **Evaluasi Metrik Model**
+   - Perbandingan uji standar vs uji stress, dampak propagasi, ringkasan multi-seed, serta metrik skenario referensi notebook.
 
 ## Checklist Sebelum Go-Live
 
 - [ ] Artefak di `artifacts/` lengkap dan terbaca.
 - [ ] Semua halaman terbuka tanpa error runtime.
 - [ ] Distribusi kelas dan prioritas konsisten dengan baseline notebook.
-- [ ] Export CSV action plan berhasil.
-- [ ] Hasil validasi standard vs stress masuk akal secara domain.
-- [ ] Penjelasan SHAP dapat dipakai untuk justifikasi keputusan operasional.
+- [ ] Ekspor CSV rencana tindakan berhasil (jika memakai halaman rekomendasi).
+- [ ] Hasil evaluasi uji standar vs uji stress masuk akal secara domain.
+- [ ] (Opsional) Penjelasan SHAP dapat dipakai untuk justifikasi keputusan operasional.
 
 ## Catatan Teknis
 

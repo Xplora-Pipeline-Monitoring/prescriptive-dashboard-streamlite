@@ -76,7 +76,7 @@ def validate_and_prepare_features(
         feature_df[col] = pd.to_numeric(feature_df[col], errors="coerce")
         if feature_df[col].isna().all():
             feature_df[col] = 0.0
-            warnings.append(f"Kolom '{col}' seluruhnya null/non-numeric. Diisi 0.")
+            warnings.append(f"Kolom '{col}' seluruhnya null atau tak numerik. Diisi 0.")
         else:
             feature_df[col] = feature_df[col].fillna(feature_df[col].median())
 

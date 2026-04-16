@@ -16,12 +16,12 @@ def _sigmoid(x: np.ndarray) -> np.ndarray:
 
 def _audit_flag(actual_cls: str, pred_cls: str) -> str:
     if actual_cls == pred_cls:
-        return "match"
+        return "cocok"
     if actual_cls == "Critical" and pred_cls != "Critical":
-        return "missed_critical"
+        return "critical_terlewat"
     if actual_cls != "Critical" and pred_cls == "Critical":
-        return "over_alert"
-    return "class_mismatch"
+        return "peringatan_berlebih"
+    return "kelas_tidak_cocok"
 
 
 def _recommend_from_driver(feature: str, direction: str) -> str:

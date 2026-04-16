@@ -4,9 +4,9 @@ import pandas as pd
 
 
 ACTION_MAP = {
-    "P1": "Immediate UT + inhibitor boost + pressure review",
-    "P2": "Targeted inspection + chemistry adjustment",
-    "P3": "Routine monitoring + normal PM cycle",
+    "P1": "UT segera + peningkatan inhibitor + tinjau tekanan",
+    "P2": "Inspeksi terarah + penyesuaian kimiawi",
+    "P3": "Monitoring rutin + siklus PM normal",
 }
 
 SLA_MAP = {
